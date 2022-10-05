@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.zenika.tutoriels</groupId>
+	<artifactId>observability-demo</artifactId>
+	<packaging>pom</packaging>
+	<version>dev-SNAPSHOT</version>
+	<name>observability-demo</name>
+	<description>A demonstration of distributed applications observability</description>
+	<properties>
+		<java.version>17</java.version>
+		<spring-boot.version>2.7.4</spring-boot.version>
+		<spring-cloud.version>2021.0.4</spring-cloud.version>
+		<ecs-logging-java.version>1.2.0</ecs-logging-java.version>
+		<start-class></start-class>
+		<spring-cloud-sleuth-otel.version>1.1.0</spring-cloud-sleuth-otel.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-parent</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>co.elastic.logging</groupId>
+				<artifactId>logback-ecs-encoder</artifactId>
+				<version>${ecs-logging-java.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-sleuth-otel-dependencies</artifactId>
+				<version>${spring-cloud-sleuth-otel.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<modules>
+		<module>api-contracts</module>
+		<module>service-utils</module>
+		<module>fridge-service</module>
+		<module>burger-maker-service</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${spring-boot.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+
+				<configuration>
+					<mainClass>${start-class}</mainClass>
+					<layers>
+						<enabled>true</enabled>
+					</layers>
+					<additionalProperties>
+						<spring-boot-version>${spring-boot.version}</spring-boot-version>
+						<spring-cloud-version>${spring-cloud.version}</spring-cloud-version>
+					</additionalProperties>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
