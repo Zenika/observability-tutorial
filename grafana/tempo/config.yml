@@ -1,0 +1,19 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+search_enabled: true
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+        http:
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo

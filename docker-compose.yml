@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  fridge:
+    image: observability-tutorial-fridge:latest
+    environment:
+      SPRING_ACTIVE_PROFILE: docker
+      SPRING_MAIN_BANNER_MODE: off
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+        reservations:
+          cpus: '0.5'
+          memory: 32M
+    networks:
+      - observability_tutorial
+  burger-maker:
+    image: observability-tutorial-burger-maker:latest
+    build:
+      context: .
+      args:
+        jar_file: ./burger-maker-service/target/burger-maker-service-dev-SNAPSHOT.jar
+        application_name: burger_maker
+    environment:
+      FRIDGE_HOST: fridge
+      SPRING_ACTIVE_PROFILE: docker
+      SPRING_MAIN_BANNER_MODE: off
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 128M
+        reservations:
+          cpus: '0.5'
+          memory: 32M
+    depends_on:
+      - fridge
+    ports:
+      - "8080:8080"
+    networks:
+      - observability_tutorial
+
+networks:
+  observability_tutorial:
+    external: true
+    name: observability_tutorial

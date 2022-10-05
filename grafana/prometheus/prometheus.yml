@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "spring-applications"
+    metrics_path: "/metrics/path"
+    scheme: "http"
+    static_configs:
+      - targets:
+          - "some-service:8080"
+          - "another-service:8080"
