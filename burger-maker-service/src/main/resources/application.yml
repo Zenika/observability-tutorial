@@ -1,0 +1,97 @@
+spring:
+  application:
+    name: burger-maker
+  cloud:
+    loadbalancer:
+      ribbon:
+        enable: false
+  sleuth:
+    enabled: false
+    sampler:
+      probability: 1.0
+    web:
+      client:
+        enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: []
+  endpoint:
+    prometheus:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+server:
+  port: 8080
+services:
+  fridge:
+    url: http://localhost:8081
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+server:
+  port: 8080
+services:
+  fridge:
+    url: http://${FRIDGE_HOST}:8080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: sleuth & !traces-exporter
+  sleuth:
+    enabled: true
+    web:
+      client:
+        enabled: true
+    otel:
+      exporter:
+        otlp:
+          enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: sleuth & traces-exporter
+  sleuth:
+    enabled: true
+    web:
+      client:
+        enabled: true
+    otel:
+      config:
+        trace-id-ratio-based: 1.0
+      exporter:
+        otlp:
+          enabled: true
+      resource:
+        attributes:
+          "application.name": ${GLOBAL_APPLICATION_NAME:}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: metrics
+
+management:
+  endpoint:
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
+          - metrics
