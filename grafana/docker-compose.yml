@@ -45,5 +45,13 @@ services:
     networks:
       - observability_tutorial
 
+  tempo:
+    image: grafana/tempo:1.5.0
+    command: --config.file=/etc/tempo/config.yml
+    volumes:
+      - ./tempo:/etc/tempo:ro
+    networks:
+      - observability_tutorial
+
   prometheus:
     image: bitnami/prometheus:2.41.0
