@@ -9,6 +9,7 @@ services:
       - "8889:8889"
     volumes:
       - ./otel-collector:/etc/otel-collector/
+      - observability_tutorial:/logs
     networks:
       - observability_tutorial
 
@@ -16,9 +17,10 @@ services:
     image: antechrestos/observability-tutorial-fridge:latest
     environment:
       JVM_OPTIONS: "-javaagent:/opt/opentelemetry-javaagent.jar"
-      SPRING_ACTIVE_PROFILE: docker,log_file
+      SPRING_ACTIVE_PROFILE: docker,requests-attributes-in-mdc,json_log_file
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
+      GLOBAL_APPLICATION_NAME: "burger_maker"
       OTEL_TRACES_EXPORTER: "otlp"
       OTEL_TRACES_SAMPLER: "always_on"
       OTEL_METRICS_EXPORTER: "otlp"
@@ -46,9 +48,10 @@ services:
     environment:
       JVM_OPTIONS: "-javaagent:/opt/opentelemetry-javaagent.jar"
       FRIDGE_HOST: fridge
-      SPRING_ACTIVE_PROFILE: docker,log_file
+      SPRING_ACTIVE_PROFILE: docker,requests-attributes-in-mdc,json_log_file
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
+      GLOBAL_APPLICATION_NAME: "burger_maker"
       OTEL_TRACES_EXPORTER: "otlp"
       OTEL_TRACES_SAMPLER: "always_on"
       OTEL_METRICS_EXPORTER: "otlp"

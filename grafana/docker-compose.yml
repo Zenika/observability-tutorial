@@ -34,16 +34,16 @@ services:
     networks:
       - observability_tutorial
 
-  promtail:
-    image: grafana/promtail:2.7.1
-    command:
-      - -config.file
-      - /etc/promtail/config.yml
-    volumes:
-      - ./promtail:/etc/promtail:ro
-      - observability_tutorial:/logs
-    networks:
-      - observability_tutorial
+#  promtail:
+#    image: grafana/promtail:2.7.1
+#    command:
+#      - -config.file
+#      - /etc/promtail/config.yml
+#    volumes:
+#      - ./promtail:/etc/promtail:ro
+#      - observability_tutorial:/logs
+#    networks:
+#      - observability_tutorial
 
   tempo:
     image: grafana/tempo:1.5.0

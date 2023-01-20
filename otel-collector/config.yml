@@ -5,8 +5,77 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
+  filelog/servicelogs:
+    include: [ "/logs/*.log" ]
+    start_at: end
+    include_file_path: false
+    include_file_name: true
+    multiline:
+      line_start_pattern: "^{"
+    operators:
+      - type: json_parser
+        id: parse_log
+        timestamp:
+          parse_from: 'attributes["@timestamp"]'
+          layout: "%Y-%m-%dT%H:%M:%S.%LZ"
+        severity:
+          parse_from: 'attributes["log.level"]'
+        output: remove_time
+      - type: remove
+        id: remove_time
+        field: 'attributes["@timestamp"]'
+        output: keep_trace_id_and_span_id
+      - type: filter
+        id: keep_trace_id_and_span_id
+        output: parse_trace
+        expr: 'not("trace_id" in attributes and "span_id" in attributes and "request.method" in attributes and "request.uri" in attributes)'
+      - type: trace_parser
+        id: parse_trace
+        trace_id:
+          parse_from: attributes.trace_id
+        span_id:
+          parse_from: attributes.span_id
+        output: promote_trace_id
+      - type: move
+        id: promote_trace_id
+        from: attributes.trace_id
+        to: attributes.traceID
+        output: promote_span_id
+      - type: move
+        id: promote_span_id
+        from: attributes.span_id
+        to: attributes.spanID
+        output: promote_application
+      - type: move
+        id: promote_application
+        from: 'attributes["service.name"]'
+        to: attributes.application
+        output: promote_service
+      - type: move
+        id: promote_service
+        from: 'attributes["service.node.name"]'
+        to: attributes.service
+        output: promote_http_method
+      - type: move
+        id: promote_http_method
+        from: 'attributes["request.method"]'
+        to: attributes.httpMethod
+        output: promote_http_uri
+      - type: move
+        id: promote_http_uri
+        from: 'attributes["request.uri"]'
+        to: attributes.httpPath
+#        output: sysout
+#      - id: sysout
+#        type: stdout
 
 processors:
+  attributes/loki:
+    actions:
+      - action: insert
+        key: loki.attribute.labels
+        value: "application,service,httpMethod,httpPath"
+
   batch:
     send_batch_size: 5
     send_batch_max_size: 10
@@ -19,6 +88,8 @@ exporters:
       insecure: true
   prometheus:
     endpoint: 0.0.0.0:8889
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
   logging:
     verbosity: detailed
     sampling_initial: 5
@@ -36,3 +107,7 @@ service:
       receivers: [otlp]
       processors: [batch ]
       exporters: [ otlp/tempo ]
+    logs:
+      receivers: [filelog/servicelogs]
+      processors: [attributes/loki]
+      exporters: [loki]
