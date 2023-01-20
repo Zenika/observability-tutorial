@@ -1,5 +1,9 @@
 version: '3.9'
 
+networks:
+  observability_tutorial:
+    external: true
+    name: observability_tutorial
 
 services:
   grafana:
@@ -11,6 +15,8 @@ services:
       - "3000:3000"
     volumes:
       - ./grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - observability_tutorial
 
   loki:
     image: grafana/loki:2.7.1
@@ -19,6 +25,8 @@ services:
       - /etc/loki/config.yml
     volumes:
       - ./loki:/etc/loki:ro
+    networks:
+      - observability_tutorial
 
   promtail:
     image: grafana/promtail:2.7.1
@@ -27,6 +35,8 @@ services:
       - /etc/promtail/config.yml
     volumes:
       - ./promtail:/etc/promtail:ro
+    networks:
+      - observability_tutorial
 
   prometheus:
     image: bitnami/prometheus:2.41.0
