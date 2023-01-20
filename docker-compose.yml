@@ -1,14 +1,30 @@
 version: "3.8"
 
 services:
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.69.0
+    command: [ "--config=/etc/otel-collector/config.yml" ]
+    ports:
+      - "8889:8889"
+    volumes:
+      - ./otel-collector:/etc/otel-collector/
+    networks:
+      - observability_tutorial
+
   fridge:
     image: antechrestos/observability-tutorial-fridge:latest
     environment:
-      SPRING_ACTIVE_PROFILE: docker,json_log_file,requests-attributes-in-mdc,sleuth,traces-exporter,metrics
+      JVM_OPTIONS: "-javaagent:/opt/opentelemetry-javaagent.jar"
+      SPRING_ACTIVE_PROFILE: docker,log_file
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
-      SPRING_SLEUTH_OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
-      GLOBAL_APPLICATION_NAME: "burger_maker"
+      OTEL_TRACES_EXPORTER: "none"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_LOGS_EXPORTER: "none"
+      OTEL_EXPORTER_OTLP_TIMEOUT: "2s"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=fridge,application.name=burger_maker"
     deploy:
       mode: replicated
       replicas: 1
@@ -27,12 +43,17 @@ services:
   burger-maker:
     image: antechrestos/observability-tutorial-burger-maker:latest
     environment:
+      JVM_OPTIONS: "-javaagent:/opt/opentelemetry-javaagent.jar"
       FRIDGE_HOST: fridge
-      SPRING_ACTIVE_PROFILE: docker,json_log_file,requests-attributes-in-mdc,sleuth,traces-exporter,metrics
+      SPRING_ACTIVE_PROFILE: docker,log_file
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
-      SPRING_SLEUTH_OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
-      GLOBAL_APPLICATION_NAME: "burger_maker"
+      OTEL_TRACES_EXPORTER: "none"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_LOGS_EXPORTER: "none"
+      OTEL_EXPORTER_OTLP_TIMEOUT: "2s"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=burger_maker,application.name=burger_maker"
     deploy:
       mode: replicated
       replicas: 1
