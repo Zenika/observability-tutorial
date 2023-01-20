@@ -22,6 +22,7 @@ scrape_configs:
       - json:
           expressions:
             application: '"service.name"'
+            service: '"service.node.name"'
             date: '"@timestamp"'
             httpMethod: '"request.method"'
             httpPath: '"request.uri"'
@@ -40,5 +41,6 @@ scrape_configs:
           format: RFC3339Nano
       - labels:
           application:
+          service:
           httpMethod:
           httpPath:

@@ -12,7 +12,14 @@ datasources:
     isDefault: false
     basicAuth: false
     apiVersion: 1
-    jsonData: { }
+    jsonData:
+      tracesToLogs:
+        datasourceUid: loki
+        mapTagNamesEnabled: true
+        mappedTags: [ { key: 'application.name', value: 'application' } ]
+        tags:
+          - application
+        lokiSearch: true
 
   - name: Loki
     type: loki
@@ -24,4 +31,10 @@ datasources:
     url: http://loki:3100
     isDefault: true
     basicAuth: false
-    jsonData: {}
+    jsonData:
+      derivedFields:
+        - datasourceUid: tempo
+          name: traceID
+          matcherRegex: "\"traceID\":\"([a-z0-9]+)\""
+          url: $${__value.raw}
+
