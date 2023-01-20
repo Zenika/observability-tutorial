@@ -38,3 +38,16 @@ datasources:
           matcherRegex: "\"traceID\":\"([a-z0-9]+)\""
           url: $${__value.raw}
 
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    orgId: 1
+    version: 1
+    uid: prometheus
+    editable: true
+    url: http://prometheus:9090
+    isDefault: false
+    basicAuth: false
+    jsonData:
+      httpMethod: "POST"
+      manageAlerts: false

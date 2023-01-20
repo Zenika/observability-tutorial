@@ -55,3 +55,8 @@ services:
 
   prometheus:
     image: bitnami/prometheus:2.41.0
+    volumes:
+      - ./prometheus:/etc/prometheus:ro
+    networks:
+      - observability_tutorial
+

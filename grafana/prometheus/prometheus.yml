@@ -4,9 +4,9 @@ global:
 
 scrape_configs:
   - job_name: "spring-applications"
-    metrics_path: "/metrics/path"
+    metrics_path: "/actuator/prometheus"
     scheme: "http"
     static_configs:
       - targets:
-          - "some-service:8080"
-          - "another-service:8080"
+          - "burger-maker:8080"
+          - "fridge:8080"

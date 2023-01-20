@@ -4,7 +4,7 @@ services:
   fridge:
     image: antechrestos/observability-tutorial-fridge:latest
     environment:
-      SPRING_ACTIVE_PROFILE: docker,json_log_file,requests-attributes-in-mdc,sleuth,traces-exporter
+      SPRING_ACTIVE_PROFILE: docker,json_log_file,requests-attributes-in-mdc,sleuth,traces-exporter,metrics
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
       SPRING_SLEUTH_OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
@@ -28,7 +28,7 @@ services:
     image: antechrestos/observability-tutorial-burger-maker:latest
     environment:
       FRIDGE_HOST: fridge
-      SPRING_ACTIVE_PROFILE: docker,json_log_file,requests-attributes-in-mdc,sleuth,traces-exporter
+      SPRING_ACTIVE_PROFILE: docker,json_log_file,requests-attributes-in-mdc,sleuth,traces-exporter,metrics
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
       SPRING_SLEUTH_OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
