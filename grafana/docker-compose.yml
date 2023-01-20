@@ -5,6 +5,12 @@ networks:
     external: true
     name: observability_tutorial
 
+volumes:
+  observability_tutorial:
+    external: true
+    name: observability_tutorial
+
+
 services:
   grafana:
     image: grafana/grafana-oss:9.3.2
@@ -35,6 +41,7 @@ services:
       - /etc/promtail/config.yml
     volumes:
       - ./promtail:/etc/promtail:ro
+      - observability_tutorial:/logs
     networks:
       - observability_tutorial
 

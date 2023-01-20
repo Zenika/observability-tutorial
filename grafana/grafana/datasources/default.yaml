@@ -8,7 +8,7 @@ datasources:
     version: 1
     uid: loki
     editable: true
-    url: http://the-loki-host:3100
+    url: http://loki:3100
     isDefault: true
     basicAuth: false
     jsonData: {}
