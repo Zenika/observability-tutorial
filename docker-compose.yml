@@ -20,7 +20,7 @@ services:
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
       OTEL_TRACES_EXPORTER: "none"
-      OTEL_METRICS_EXPORTER: "none"
+      OTEL_METRICS_EXPORTER: "otlp"
       OTEL_LOGS_EXPORTER: "none"
       OTEL_EXPORTER_OTLP_TIMEOUT: "2s"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
@@ -49,7 +49,7 @@ services:
       SPRING_MAIN_BANNER_MODE: off
       LOG_DIRECTORY: /log
       OTEL_TRACES_EXPORTER: "none"
-      OTEL_METRICS_EXPORTER: "none"
+      OTEL_METRICS_EXPORTER: "otlp"
       OTEL_LOGS_EXPORTER: "none"
       OTEL_EXPORTER_OTLP_TIMEOUT: "2s"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"

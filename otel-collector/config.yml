@@ -13,6 +13,8 @@ processors:
     timeout: 2s
 
 exporters:
+  prometheus:
+    endpoint: 0.0.0.0:8889
   logging:
     verbosity: detailed
     sampling_initial: 5
@@ -24,4 +26,4 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch ]
-      exporters: [ logging ]
+      exporters: [ prometheus ]
