@@ -16,3 +16,29 @@ scrape_configs:
         labels:
           job: services
           __path__: /logs/*.log
+    pipeline_stages:
+      - multiline:
+          firstline: "^{"
+      - json:
+          expressions:
+            application: '"service.name"'
+            date: '"@timestamp"'
+            httpMethod: '"request.method"'
+            httpPath: '"request.uri"'
+      - replace:
+          expression: ".*([Z])$"
+          source: "date"
+          replace: "000000-00:00"
+      - replace:
+          expression: "(traceId)"
+          replace: "traceID"
+      - replace:
+          expression: "(spanId)"
+          replace: "spanID"
+      - timestamp:
+          source: 'date'
+          format: RFC3339Nano
+      - labels:
+          application:
+          httpMethod:
+          httpPath:
