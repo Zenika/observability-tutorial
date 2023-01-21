@@ -92,7 +92,7 @@ For grafana:
 
 For Loki: mount `./loki` to `/etc/loki` and `-config.file` to the mounted `config.yml` file location
 
-For promtail: mount the `config.yml` and set the `-config.file` location.
+For promtail: mount the `config.yml` and set the `-config.file` location (or use the default path used by the docker image `/etc/promtail/config.yml`).
 
 You can comment the `prometheus`.
 
@@ -107,7 +107,7 @@ In the `docker-compose.yml` file under `grafana` directory, find a way to mount 
 promtail container and tell promtail to parse them.
 
 [Promtail pipeline configuration documentation](https://grafana.com/docs/loki/latest/clients/promtail/pipelines/) 
-list some useful stages. One possible way of achieving thi may be to activate `json_log_file` spring profile and do something like
+list some useful stages. One possible way of achieving this may be to activate `json_log_file` spring profile and do something like
 
 ```yaml
 pipeline_stages:
@@ -140,7 +140,7 @@ and more specifically [stages](https://grafana.com/docs/loki/latest/clients/prom
 
 You may want to use `regex`, or find the right spring profile to log into `json`, elastic common schema to be more precise.
 
-Also, know that you can test your promtail configuration by running `promtail` with `--inspect` and `--dry-run` option.
+Also, know that you can test your promtail configuration by running `promtail` with `--inspect` and `--dry-run` option. This [documentation](https://grafana.com/docs/loki/latest/clients/promtail/troubleshooting/) provides details on troubleshooting commands, which you can run from your docker image `docker compose exec promtail bash`.
 
 ### Send traces to tempo
 
@@ -151,7 +151,7 @@ Add spans and trace to grafana. For this, you will need to
 * add a tempo data source in grafana
 
 On application side, you will need to activate the appropriate profile that activates trace exportation. You will
-need to set the `SPRING_SLEUTH_OTEL_EXPORTER_OTLP_ENDPOINT` environment variable for both application.
+need to set the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable for both application.
 
 When done, you can also link your loki entries to your tempo entries using the `jsonData.derivedFields` section
 of your loki datasource declarations in grafana. If set accordingly, any log line of your loki datasource will
@@ -172,7 +172,7 @@ On application side, the `metrics` profile for **both** applications
 
 This will expose metrics under `actuator/prometheus`.
 
-In order to also illustrate the notion of application, we already add a counter in `BurgerMakerControllerAdvice.unknownFridgeError`:
+In order to also illustrate the notion of application, we already added a counter in `BurgerMakerControllerAdvice.unknownFridgeError`:
 
 ```java
 counter("application.fridge.unknown-error").increment();
