@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   fridge:
-    image: observability-tutorial-fridge:latest
+    image: antechrestos/observability-tutorial-fridge:latest
     environment:
       SPRING_ACTIVE_PROFILE: docker
       SPRING_MAIN_BANNER_MODE: off
@@ -19,12 +19,7 @@ services:
     networks:
       - observability_tutorial
   burger-maker:
-    image: observability-tutorial-burger-maker:latest
-    build:
-      context: .
-      args:
-        jar_file: ./burger-maker-service/target/burger-maker-service-dev-SNAPSHOT.jar
-        application_name: burger_maker
+    image: antechrestos/observability-tutorial-burger-maker:latest
     environment:
       FRIDGE_HOST: fridge
       SPRING_ACTIVE_PROFILE: docker
