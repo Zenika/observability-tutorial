@@ -12,10 +12,10 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 512M
         reservations:
           cpus: '0.5'
-          memory: 32M
+          memory: 128M
     networks:
       - observability_tutorial
   burger-maker:
@@ -30,10 +30,10 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: 128M
+          memory: 512M
         reservations:
           cpus: '0.5'
-          memory: 32M
+          memory: 128M
     depends_on:
       - fridge
     ports:
