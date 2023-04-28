@@ -28,17 +28,9 @@ docker network create observability_tutorial
 ```
 
 
-## Build
+## Run application
 
-In order to validate your configuration, run the following commands
-
-```shell
-mvn clean verify
-docker image build --platform amd64 --build-arg jar_file=burger-maker-service/target/burger-maker-service-dev-SNAPSHOT.jar --build-arg application_name=burger_maker -t observability-tutorial-burger-maker:latest .
-docker image build --platform amd64 --build-arg jar_file=fridge-service/target/fridge-service-dev-SNAPSHOT.jar --build-arg application_name=fridge -t observability-tutorial-fridge:latest .
-```
-
-One both image are built, run the command
+Run the command
 
 ```shell
 docker compose up
